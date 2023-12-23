@@ -3,43 +3,45 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using System;
+using UnityEngine.Rendering;
 
 public class GameSaveLoadManager : MonoBehaviour
 {
-    private string savePath;
-
-    private void Awake()
+    string fileSavePath = Application.streamingAssetsPath + "/SavePath.json";
+    /// <summary>
+    /// 保存游戏进度
+    /// </summary>
+    /// <param name="datas"></param>
+    public void SaveGame(Data datas)
     {
-        savePath = "D:/Unity2022/工程文件/Galgame Test/SavaDataPath/gameSave.json";
-    }
-
-    // 保存游戏进度
-    public void SaveGame(StoryData datas)
-    {
-        string jsonData = JsonUtility.ToJson(datas);
-        File.WriteAllText(savePath, jsonData);
+        string json = JsonUtility.ToJson(datas, true);
+        using (StreamWriter sw = new StreamWriter(fileSavePath))
+        {
+            sw.WriteLine(json);
+            sw.Close();
+            sw.Dispose();
+        }
         Debug.Log("游戏进度保存成功！");
     }
 
-    // 加载游戏进度
+    /// <summary>
+    /// 加载游戏进度
+    /// </summary>
     public void LoadGame()
     {
         Load();
     }
 
-    public StoryData Load()
+    public Data Load()
     {
-        if (File.Exists(savePath))
+        string json;
+        using (StreamReader sr = new StreamReader(fileSavePath))
         {
-            string jsonData = File.ReadAllText(savePath);
-            StoryData data = JsonUtility.FromJson<StoryData>(jsonData);
-            Debug.Log("游戏进度加载成功！");
-            return data;
+            json = sr.ReadToEnd();
+            sr.Close();
         }
-        else
-        {
-            Debug.Log("没有保存的游戏进度！");
-            return null;
-        }
+        Data data = JsonUtility.FromJson<Data>(json);
+        Debug.Log("游戏进度加载成功！");
+        return data;
     }
 }
