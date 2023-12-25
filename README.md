@@ -1,2 +1,2 @@
-# GameDemo
-分享我在学习Unity过程中开发的游戏demo
+# 基于《路人女主的养成方法》制作的Galgame demo
+仅作分享，感兴趣的可以一起探讨
